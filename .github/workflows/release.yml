@@ -117,7 +117,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           gh release create "v$VERSION" \
-            --title "Channel Guard v$VERSION" \
+            --title "v$VERSION" \
             --notes-file release-notes.md \
             "dist/$PLUGIN_PKG-$VERSION.tar.gz" \
             "dist/SHA256SUMS.txt"
