@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-06-20
+
+Adds a global always-allowed list and a fuller System Console panel so
+administrators have meaningful settings to configure beyond
+`AllowBots` / `RejectionMessage`.
+
+### Added
+- Global setting **GlobalAlwaysAllowed** (longtext) — usernames listed
+  here can start new messages in EVERY restricted channel without being
+  added to the per-channel allow list. Useful for leadership, security
+  teams, or shared comms bots. Comma- / newline-separated, with or
+  without leading `@`. Stored in plugin configuration, evaluated in the
+  hook between the System Admin bypass and the per-channel allow list.
+- `/channel-guard list` now also reports the global always-allowed
+  usernames so channel admins can see why a user might bypass the
+  per-channel list without having been added to it.
+
+### Changed
+- `plugin.json` settings_schema:
+  - Header rewritten as Markdown, documents the two-layer model
+    (global × per-channel) and the exact order of evaluation in the
+    `MessageWillBePosted` hook.
+  - Footer notes that per-channel allow lists are managed via the
+    `/channel-guard` slash command.
+  - **RejectionMessage** widened from `text` to `longtext` (multi-line
+    edit field) so admins can wrap long explanations.
+
 ## [1.2.0] - 2026-06-20
 
 Marketplace-readiness release. All changes target the requirements in the
@@ -106,7 +133,8 @@ Initial public release.
   macOS BSD tar injects — those headers cause Mattermost to reject
   uploads with "Unable to find manifest for extracted plugin".
 
-[Unreleased]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/releases/tag/v1.0.0

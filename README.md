@@ -218,10 +218,11 @@ State is stored in the plugin KV store under the key
 
 ### Global (System Console)
 
-Two settings apply to every gated channel.
+Three settings apply to every gated channel.
 
 | Setting | Default | Purpose |
 |---------|---------|---------|
+| **Global always-allowed usernames** | _(empty)_ | Usernames that can start new messages in EVERY restricted channel without being added to each channel's per-channel allow list. Useful for leadership accounts, security teams, or shared comms bots. Comma- or newline-separated, with or without `@`. |
 | **Always allow bots / webhooks** | `true` | Lets bot accounts and incoming webhooks start new messages even if they are not in the per-channel allow list. Useful for automated announcement pipelines. |
 | **Default rejection message** | "Only authorized members can start new messages in this channel. You can still reply within existing threads." | Shown to blocked users as the inline rejection text and the banner that replaces the input box. |
 

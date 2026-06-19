@@ -271,8 +271,15 @@ func (p *Plugin) cmdList(channelID string) *model.CommandResponse {
 	if appErr != nil {
 		return ephemeral("Error: " + appErr.Error())
 	}
+
+	globalAllowed := sortedUsernames(p.getConfiguration().globalAllowedSet())
+
 	if cc == nil {
-		return ephemeral("Channel Guard is **not configured** for this channel.\n\nGet started:\n```\n/channel-guard enable\n/channel-guard add @alice @bob\n```")
+		out := "Channel Guard is **not configured** for this channel.\n\nGet started:\n```\n/channel-guard enable\n/channel-guard add @alice @bob\n```"
+		if len(globalAllowed) > 0 {
+			out += "\n\nGlobal always-allowed (from System Console): " + formatPosters(globalAllowed)
+		}
+		return ephemeral(out)
 	}
 	status := ":unlock: disabled"
 	if cc.Enabled {
@@ -282,7 +289,11 @@ func (p *Plugin) cmdList(channelID string) *model.CommandResponse {
 	if len(cc.Posters) > 0 {
 		posters = formatPosters(cc.Posters)
 	}
-	return ephemeral(fmt.Sprintf("Channel Guard: %s\nAllowed posters: %s", status, posters))
+	out := fmt.Sprintf("Channel Guard: %s\nAllowed posters (this channel): %s", status, posters)
+	if len(globalAllowed) > 0 {
+		out += "\nGlobal always-allowed (System Console): " + formatPosters(globalAllowed)
+	}
+	return ephemeral(out)
 }
 
 func (p *Plugin) cmdHelp() *model.CommandResponse {
@@ -312,4 +323,14 @@ func formatPosters(users []string) string {
 		out[i] = "`@" + u + "`"
 	}
 	return strings.Join(out, ", ")
+}
+
+// sortedUsernames returns the keys of a username set as a sorted slice for stable display.
+func sortedUsernames(set map[string]bool) []string {
+	out := make([]string, 0, len(set))
+	for u := range set {
+		out = append(out, u)
+	}
+	sort.Strings(out)
+	return out
 }

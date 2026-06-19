@@ -82,14 +82,18 @@ func (p *Plugin) MessageWillBePosted(_ *plugin.Context, post *model.Post) (*mode
 	if user.IsInRole(model.SystemAdminRoleId) {
 		return post, ""
 	}
-	if cc.hasPoster(strings.ToLower(user.Username)) {
+	username := strings.ToLower(user.Username)
+	if config.globalAllowedSet()[username] {
+		return post, ""
+	}
+	if cc.hasPoster(username) {
 		return post, ""
 	}
 
 	p.API.LogInfo("channel-guard: blocked root post",
 		"channel_id", post.ChannelId,
 		"user_id", user.Id,
-		"username", user.Username,
+		"username", username,
 	)
 	return nil, config.rejection()
 }
