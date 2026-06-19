@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: lint and cross-compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: gofmt
+        run: |
+          out=$(gofmt -d -s ./server)
+          if [ -n "$out" ]; then
+            echo "$out"
+            echo "::error::gofmt found unformatted files. Run 'gofmt -w -s ./server'."
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./server
+
+      - name: go mod tidy (drift check)
+        run: |
+          go mod tidy
+          if ! git diff --quiet -- go.mod go.sum; then
+            echo "::error::go.mod / go.sum are out of sync. Run 'go mod tidy' and commit."
+            git diff -- go.mod go.sum
+            exit 1
+          fi
+
+      - name: Cross-compile all platforms
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          set -euo pipefail
+          for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64; do
+            os=${target%/*}
+            arch=${target#*/}
+            ext=""
+            [ "$os" = "windows" ] && ext=".exe"
+            echo "==> $os/$arch"
+            GOOS=$os GOARCH=$arch go build -trimpath -ldflags '-s -w' \
+              -o "/tmp/plugin-$os-$arch$ext" ./server
+          done
+
+      - name: Verify webapp bundle is valid JavaScript
+        run: node --check webapp/dist/main.js

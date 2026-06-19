@@ -1,0 +1,123 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  PLUGIN_ID: co.baxu.channel-guard
+  PLUGIN_PKG: mattermost-plugin-channel-guard
+
+jobs:
+  release:
+    name: build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Resolve version from tag
+        id: version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Building $PLUGIN_PKG v$version"
+
+      - name: Verify plugin.json version matches tag
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          manifest_version=$(grep -oE '"version": *"[^"]*"' plugin.json | head -1 | sed -E 's/.*"version": *"([^"]+)".*/\1/')
+          echo "tag=$VERSION manifest=$manifest_version"
+          if [ "$manifest_version" != "$VERSION" ]; then
+            echo "::error::Tag $VERSION does not match plugin.json version $manifest_version"
+            exit 1
+          fi
+
+      - name: Cross-compile server binaries
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          set -euo pipefail
+          mkdir -p server/dist
+          for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64; do
+            os=${target%/*}
+            arch=${target#*/}
+            ext=""
+            [ "$os" = "windows" ] && ext=".exe"
+            echo "==> $os/$arch"
+            GOOS=$os GOARCH=$arch go build -trimpath -ldflags '-s -w' \
+              -o "server/dist/plugin-$os-$arch$ext" ./server
+          done
+
+      - name: Package bundle (GNU tar)
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          bundle="/tmp/bundle/$PLUGIN_ID"
+          rm -rf /tmp/bundle
+          mkdir -p "$bundle/server/dist" "$bundle/webapp/dist"
+          cp plugin.json LICENSE NOTICE "$bundle/"
+          cp -r server/dist/. "$bundle/server/dist/"
+          cp webapp/dist/main.js "$bundle/webapp/dist/"
+          mkdir -p dist
+          tar -C /tmp/bundle -czf "dist/$PLUGIN_PKG-$VERSION.tar.gz" "$PLUGIN_ID"
+          ls -lh dist/
+
+      - name: Compute SHA256SUMS
+        working-directory: dist
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          sha256sum "$PLUGIN_PKG-$VERSION.tar.gz" > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Extract release notes from CHANGELOG.md
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Pull the section between "## [VERSION]" and the next "## [" header.
+          awk -v v="$VERSION" '
+            BEGIN { found = 0 }
+            $0 ~ "^## \\[" v "\\]" { found = 1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+
+          if [ ! -s release-notes.md ]; then
+            echo "_See [CHANGELOG.md](./CHANGELOG.md) for details._" > release-notes.md
+          fi
+
+          {
+            echo ""
+            echo "## Verifying the download"
+            echo ""
+            echo "\`\`\`sh"
+            echo "sha256sum -c SHA256SUMS.txt"
+            echo "\`\`\`"
+          } >> release-notes.md
+
+          echo "--- release notes ---"
+          cat release-notes.md
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "v$VERSION" \
+            --title "Channel Guard v$VERSION" \
+            --notes-file release-notes.md \
+            "dist/$PLUGIN_PKG-$VERSION.tar.gz" \
+            "dist/SHA256SUMS.txt"

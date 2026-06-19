@@ -1,5 +1,13 @@
 # Mattermost Channel Guard
 
+[![Release](https://img.shields.io/github/v/release/phuoccm/mattermost-plugin-channel-guard?sort=semver&display_name=tag)](https://github.com/phuoccm/mattermost-plugin-channel-guard/releases)
+[![CI](https://github.com/phuoccm/mattermost-plugin-channel-guard/actions/workflows/ci.yml/badge.svg)](https://github.com/phuoccm/mattermost-plugin-channel-guard/actions/workflows/ci.yml)
+[![Release workflow](https://github.com/phuoccm/mattermost-plugin-channel-guard/actions/workflows/release.yml/badge.svg)](https://github.com/phuoccm/mattermost-plugin-channel-guard/actions/workflows/release.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
+[![Mattermost](https://img.shields.io/badge/Mattermost-9.5%2B-1e325c.svg)](https://docs.mattermost.com/)
+[![Go](https://img.shields.io/github/go-mod/go-version/phuoccm/mattermost-plugin-channel-guard)](./go.mod)
+[![Downloads](https://img.shields.io/github/downloads/phuoccm/mattermost-plugin-channel-guard/total?color=brightgreen)](https://github.com/phuoccm/mattermost-plugin-channel-guard/releases)
+
 A Mattermost plugin that lets administrators **restrict who can start new
 messages in a channel while keeping replies in threads open to everyone**.
 Configuration is per-channel, set directly from inside the channel with a
