@@ -1,0 +1,39 @@
+# Build outputs
+# (./build.sh output: the packaged plugin tarballs)
+/dist/
+# (cross-compiled server binaries)
+/server/dist/
+
+# Note: webapp/dist/main.js is hand-written source, not build output — do NOT ignore it.
+# If a bundler (esbuild/webpack/...) is added later, switch to:
+#   /webapp/dist/
+# and move the source to /webapp/src/.
+
+# Go
+*.test
+*.out
+coverage.txt
+coverage.html
+/vendor/
+
+# Node (only relevant if a webapp bundler is introduced)
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local env / secrets
+.env
+.env.local

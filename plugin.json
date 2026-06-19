@@ -1,0 +1,41 @@
+{
+  "id": "co.baxu.channel-guard",
+  "name": "Channel Guard",
+  "description": "Restrict who can start new messages (root posts) per channel. Everyone else can only reply within threads. Configure each channel directly with /channel-guard.",
+  "homepage_url": "https://github.com/baxu/mattermost-plugin-channel-guard",
+  "support_url": "https://github.com/baxu/mattermost-plugin-channel-guard/issues",
+  "version": "1.1.0",
+  "min_server_version": "9.5.0",
+  "server": {
+    "executables": {
+      "linux-amd64": "server/dist/plugin-linux-amd64",
+      "linux-arm64": "server/dist/plugin-linux-arm64",
+      "darwin-amd64": "server/dist/plugin-darwin-amd64",
+      "darwin-arm64": "server/dist/plugin-darwin-arm64",
+      "windows-amd64": "server/dist/plugin-windows-amd64.exe"
+    }
+  },
+  "webapp": {
+    "bundle_path": "webapp/dist/main.js"
+  },
+  "settings_schema": {
+    "header": "Channel Guard restricts who can start NEW messages (root posts) per channel. Replies within threads always stay open.\n\nConfigure per channel from inside the channel:\n  /channel-guard enable\n  /channel-guard add @alice @bob\n  /channel-guard list\n\nOnly System Admins and Channel Admins can run the configuration commands.",
+    "footer": "These settings apply to every channel that has Channel Guard enabled.",
+    "settings": [
+      {
+        "key": "AllowBots",
+        "display_name": "Always allow bots / webhooks",
+        "type": "bool",
+        "help_text": "Allow bot accounts and incoming webhooks to start new messages regardless of the per-channel allowed list.",
+        "default": true
+      },
+      {
+        "key": "RejectionMessage",
+        "display_name": "Default rejection message",
+        "type": "text",
+        "help_text": "Shown to users who are not allowed to start a new message. Each channel can override this in the future; for now the global value applies.",
+        "default": "Only authorized members can start new messages in this channel. You can still reply within existing threads."
+      }
+    ]
+  }
+}
