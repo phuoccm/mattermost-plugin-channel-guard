@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-06-20
+
+Marketplace-readiness release. All changes target the requirements in the
+[Mattermost Marketplace submission template](https://github.com/mattermost/mattermost-marketplace/blob/master/.github/ISSUE_TEMPLATE/add_plugin.md).
+No behavioural change for existing users.
+
+### Added
+- `release_notes_url` field in `plugin.json` pointing at this file, as
+  required by the Marketplace product checklist.
+- Audit logging via `p.API.LogInfo` at the key configuration and
+  enforcement events: channel guard enabled/disabled, posters
+  added/removed, and a root post blocked. Each entry carries the
+  channel id and a minimal user identifier.
+- `SECURITY.md` documenting the vulnerability reporting address, the
+  supported version window, and the plugin's authorisation model.
+- README screenshots under `docs/screenshots/` showing the slash command
+  in action and the explanatory banner that replaces the input box in a
+  restricted channel.
+
+### Changed
+- `homepage_url` and `support_url` in `plugin.json` updated to the
+  canonical `phuoccm/mattermost-plugin-channel-guard` repository.
+
 ## [1.1.0] - 2026-06-19
 
 Webapp UX layer added so blocked users never see the generic
@@ -83,6 +106,7 @@ Initial public release.
   macOS BSD tar injects — those headers cause Mattermost to reject
   uploads with "Unable to find manifest for extracted plugin".
 
-[Unreleased]: https://github.com/baxu/mattermost-plugin-channel-guard/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/baxu/mattermost-plugin-channel-guard/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/baxu/mattermost-plugin-channel-guard/releases/tag/v1.0.0
+[Unreleased]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/releases/tag/v1.0.0

@@ -2,9 +2,10 @@
   "id": "co.baxu.channel-guard",
   "name": "Channel Guard",
   "description": "Restrict who can start new messages (root posts) per channel. Everyone else can only reply within threads. Configure each channel directly with /channel-guard.",
-  "homepage_url": "https://github.com/baxu/mattermost-plugin-channel-guard",
-  "support_url": "https://github.com/baxu/mattermost-plugin-channel-guard/issues",
-  "version": "1.1.0",
+  "homepage_url": "https://github.com/phuoccm/mattermost-plugin-channel-guard",
+  "support_url": "https://github.com/phuoccm/mattermost-plugin-channel-guard/issues",
+  "release_notes_url": "https://github.com/phuoccm/mattermost-plugin-channel-guard/blob/main/CHANGELOG.md",
+  "version": "1.2.0",
   "min_server_version": "9.5.0",
   "server": {
     "executables": {

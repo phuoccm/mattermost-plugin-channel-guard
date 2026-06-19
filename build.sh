@@ -6,7 +6,7 @@ set -euo pipefail
 
 PLUGIN_ID="co.baxu.channel-guard"
 PLUGIN_PKG="mattermost-plugin-channel-guard"
-VERSION="1.1.0"
+VERSION="1.2.0"
 GO_IMAGE="golang:1.26"
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

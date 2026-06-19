@@ -86,6 +86,11 @@ func (p *Plugin) MessageWillBePosted(_ *plugin.Context, post *model.Post) (*mode
 		return post, ""
 	}
 
+	p.API.LogInfo("channel-guard: blocked root post",
+		"channel_id", post.ChannelId,
+		"user_id", user.Id,
+		"username", user.Username,
+	)
 	return nil, config.rejection()
 }
 

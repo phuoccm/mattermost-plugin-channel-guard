@@ -131,6 +131,7 @@ func (p *Plugin) cmdEnable(channelID string) *model.CommandResponse {
 		return ephemeral("Error saving channel config: " + appErr.Error())
 	}
 	p.broadcastConfigChanged(channelID)
+	p.API.LogInfo("channel-guard: enabled", "channel_id", channelID, "posters_count", len(cc.Posters))
 	msg := ":lock: Channel Guard is **enabled** for this channel."
 	if len(cc.Posters) == 0 {
 		msg += "\n\nNo users on the allowed list yet. Add some:\n```\n/channel-guard add @alice @bob\n```"
@@ -153,6 +154,7 @@ func (p *Plugin) cmdDisable(channelID string) *model.CommandResponse {
 		return ephemeral("Error saving channel config: " + appErr.Error())
 	}
 	p.broadcastConfigChanged(channelID)
+	p.API.LogInfo("channel-guard: disabled", "channel_id", channelID)
 	return ephemeral(":unlock: Channel Guard is **disabled** for this channel. The allowed posters list is preserved.")
 }
 
@@ -197,6 +199,10 @@ func (p *Plugin) cmdAdd(channelID string, args []string) *model.CommandResponse 
 			return ephemeral("Error saving: " + appErr.Error())
 		}
 		p.broadcastConfigChanged(channelID)
+		p.API.LogInfo("channel-guard: posters added",
+			"channel_id", channelID,
+			"added", strings.Join(added, ","),
+		)
 	}
 
 	var parts []string
@@ -253,6 +259,10 @@ func (p *Plugin) cmdRemove(channelID string, args []string) *model.CommandRespon
 		return ephemeral("No matching users on the allowed list.")
 	}
 	p.broadcastConfigChanged(channelID)
+	p.API.LogInfo("channel-guard: posters removed",
+		"channel_id", channelID,
+		"removed", strings.Join(removed, ","),
+	)
 	return ephemeral(":x: Removed: " + formatPosters(removed))
 }
 

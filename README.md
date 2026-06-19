@@ -21,6 +21,7 @@ on Professional / Enterprise.
 ## Table of contents
 
 - [Why this plugin](#why-this-plugin)
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [How it works](#how-it-works)
 - [Compatibility](#compatibility)
@@ -59,6 +60,30 @@ Channel Guard fills that gap on Team Edition with a different model:
 
 It is a small, focused plugin: one server-side hook, one slash command, one
 HTTP endpoint, one webapp file.
+
+## Screenshots
+
+### Slash command in action
+
+<p align="center">
+  <img src="./docs/screenshots/01-slash-autocomplete.png" alt="Slash command autocomplete showing the available subcommands" width="720" /><br/>
+  <sub>Autocomplete proposes every subcommand with inline examples as soon as you type <code>/channel-guard</code>.</sub>
+</p>
+
+<p align="center">
+  <img src="./docs/screenshots/02-help-output.png" alt="Output of /channel-guard help" width="720" /><br/>
+  <sub><code>/channel-guard help</code> prints the full subcommand reference and an example walkthrough as an ephemeral message.</sub>
+</p>
+
+<p align="center">
+  <img src="./docs/screenshots/03-enable-add-list.png" alt="Workflow showing enable, add posters, and list" width="720" /><br/>
+  <sub>The three-step workflow inside a channel: <code>enable</code> → <code>add @user</code> → <code>list</code>. All responses are ephemeral.</sub>
+</p>
+
+> For users not on the allowed list, the webapp layer hides the message
+> input and replaces it with an explanatory banner; threads stay fully
+> interactive. The behaviour is illustrated above by the absence of an
+> input box in any restricted channel viewed by a blocked user.
 
 ## Features
 
@@ -270,8 +295,10 @@ mattermost-plugin-channel-guard/
 │   └── dist/main.js             # vanilla JS UX layer (input hide, banner, hook, WS)
 ├── build.sh                     # cross-compile + package via Docker
 ├── CHANGELOG.md                 # release notes, Keep a Changelog format
+├── docs/screenshots/            # README screenshots
 ├── LICENSE                      # Apache 2.0
 ├── NOTICE
+├── SECURITY.md                  # vulnerability reporting policy
 └── README.md
 ```
 
