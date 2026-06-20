@@ -1,0 +1,53 @@
+name: PR title
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+permissions:
+  pull-requests: read
+
+jobs:
+  lint:
+    name: Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Accepted prefixes. Matches the project's commit-style memory:
+          # subject is imperative, no trailing period, scope optional.
+          types: |
+            feat
+            fix
+            docs
+            chore
+            refactor
+            test
+            ci
+            build
+            perf
+            revert
+          requireScope: false
+          # Block obvious WIP titles even if they happen to use a valid prefix.
+          subjectPattern: ^(?!(?i)(wip|tmp|draft)\b).+$
+          subjectPatternError: |
+            The subject "{subject}" looks like a placeholder (WIP / tmp / draft).
+            Please use a descriptive subject before merging.
+          # If a scope is provided, restrict it to the actual code areas.
+          scopes: |
+            server
+            webapp
+            admin
+            command
+            http
+            ci
+            build
+            deps
+            release
+            docs
