@@ -1,0 +1,43 @@
+# Auto-label rules consumed by actions/labeler@v5.
+# Each top-level key is a label name (will be created on the repo if missing).
+# A PR is tagged with a label when any of its changed files match a glob.
+
+'area:server':
+  - changed-files:
+      - any-glob-to-any-file:
+          - server/**
+
+'area:webapp':
+  - changed-files:
+      - any-glob-to-any-file:
+          - webapp/**
+
+'area:ci':
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**
+
+'area:docs':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.md'
+          - docs/**
+
+'area:build':
+  - changed-files:
+      - any-glob-to-any-file:
+          - build.sh
+          - plugin.json
+          - go.mod
+          - go.sum
+          - webapp/package.json
+          - webapp/tsconfig.json
+          - webapp/esbuild.config.mjs
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - go.mod
+          - go.sum
+          - webapp/package.json
+          - webapp/package-lock.json

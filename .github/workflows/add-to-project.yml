@@ -1,0 +1,24 @@
+name: Add to roadmap project
+
+on:
+  issues:
+    types: [opened, reopened, transferred]
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  add:
+    name: Append issue / PR to project board
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v1
+        with:
+          project-url: https://github.com/users/phuoccm/projects/9
+          # The default GITHUB_TOKEN cannot write to user-level Projects v2.
+          # ADD_TO_PROJECT_PAT must be a fine-grained PAT with
+          # "Projects: Read and write" on the owning account. See
+          # CONTRIBUTING.md / docs for setup steps.
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}

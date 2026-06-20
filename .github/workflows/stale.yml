@@ -1,0 +1,49 @@
+name: Close stale issues and PRs
+
+on:
+  schedule:
+    # Once a day at 03:00 UTC (10:00 ICT).
+    - cron: '0 3 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # Issues: ghost after 1 month, closed 14 days after that.
+          days-before-issue-stale: 30
+          days-before-issue-close: 14
+          stale-issue-label: stale
+          stale-issue-message: |
+            This issue has had no activity for 30 days and is being marked as
+            stale. It will be closed in 14 days unless you leave a comment or
+            add the `pinned` label.
+          close-issue-message: |
+            Closing for inactivity. If this is still relevant, please reopen
+            with an updated reproduction or context — no offence intended.
+
+          # Pull requests: stale faster than issues since they tend to rot.
+          days-before-pr-stale: 14
+          days-before-pr-close: 7
+          stale-pr-label: stale
+          stale-pr-message: |
+            This pull request has had no activity for 14 days. It will be
+            closed in 7 days unless updated. Push a new commit or reply to
+            keep it open.
+          close-pr-message: |
+            Closing this PR for inactivity. Feel free to reopen when you pick
+            it back up.
+
+          # Never auto-close items the maintainers actively curate.
+          exempt-issue-labels: 'pinned,security,roadmap,help-wanted,good first issue'
+          exempt-pr-labels: 'pinned,security,wip'
+
+          # Don't burn API quota on huge backlogs.
+          operations-per-run: 100
+          ascending: true
