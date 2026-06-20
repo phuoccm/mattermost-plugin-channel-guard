@@ -3,12 +3,12 @@
 
 version: 2
 updates:
-  # Server-side Go module. Group all non-major updates into a single weekly PR
-  # so review traffic stays low; major bumps still arrive as individual PRs.
+  # Server-side Go module. Group all non-major updates into a single monthly
+  # PR so review traffic stays low; major bumps still arrive as individual PRs.
   - package-ecosystem: gomod
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
       day: monday
       time: '06:00'
       timezone: Asia/Ho_Chi_Minh
@@ -29,7 +29,7 @@ updates:
   - package-ecosystem: npm
     directory: /webapp
     schedule:
-      interval: weekly
+      interval: monthly
       day: monday
       time: '06:00'
       timezone: Asia/Ho_Chi_Minh
