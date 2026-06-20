@@ -1,0 +1,62 @@
+# Dependabot configuration for the Channel Guard plugin.
+# Docs: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Server-side Go module. Group all non-major updates into a single weekly PR
+  # so review traffic stays low; major bumps still arrive as individual PRs.
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - dependencies
+      - area:server
+    groups:
+      go-minor-patch:
+        update-types:
+          - minor
+          - patch
+
+  # Webapp build toolchain (esbuild, typescript, @types/react).
+  - package-ecosystem: npm
+    directory: /webapp
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - dependencies
+      - area:webapp
+    groups:
+      npm-minor-patch:
+        update-types:
+          - minor
+          - patch
+
+  # CI action versions (actions/checkout, actions/setup-go, etc.).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      day: monday
+      time: '06:00'
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: ci
+    labels:
+      - dependencies
+      - area:ci
