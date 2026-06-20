@@ -40,6 +40,9 @@ jobs:
             The subject "{subject}" looks like a placeholder (WIP / tmp / draft).
             Please use a descriptive subject before merging.
           # If a scope is provided, restrict it to the actual code areas.
+          # deps / deps-dev are emitted by Dependabot PRs (production vs
+          # development dependencies) — must be allowed or Dependabot PRs
+          # fail title validation.
           scopes: |
             server
             webapp
@@ -49,5 +52,6 @@ jobs:
             ci
             build
             deps
+            deps-dev
             release
             docs
