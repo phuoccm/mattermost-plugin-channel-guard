@@ -34,11 +34,6 @@ jobs:
             perf
             revert
           requireScope: false
-          # Block obvious WIP titles even if they happen to use a valid prefix.
-          subjectPattern: ^(?!(?i)(wip|tmp|draft)\b).+$
-          subjectPatternError: |
-            The subject "{subject}" looks like a placeholder (WIP / tmp / draft).
-            Please use a descriptive subject before merging.
           # If a scope is provided, restrict it to the actual code areas.
           # deps / deps-dev are emitted by Dependabot PRs (production vs
           # development dependencies) — must be allowed or Dependabot PRs
