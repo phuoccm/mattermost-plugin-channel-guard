@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-06-20
+
+Adds a System Console panel for centralised per-channel administration so
+admins no longer need to enter each channel and run `/channel-guard` to
+see or change its allow list.
+
+### Added
+- **System Console custom setting "Per-channel allow lists"** rendered
+  by a React component (`webapp/src/admin/AdminPanel.tsx`):
+  - Lists every channel that currently has Channel Guard configured,
+    sorted by display name.
+  - Per-row actions: edit posters, toggle enable/disable, remove the
+    channel from Channel Guard entirely.
+  - Add channel via inline search (queries `/api/v4/channels/search`),
+    filters out channels already configured.
+  - Styled with Mattermost theme CSS variables so it follows the
+    active theme.
+- Server admin HTTP API (System Admin only, enforced via
+  `Mattermost-User-Id` header + role check):
+  - `GET /plugins/co.baxu.channel-guard/api/v1/admin/channels` —
+    list all configured channels with their metadata.
+  - `PUT  /plugins/co.baxu.channel-guard/api/v1/admin/channels/{id}` —
+    set enabled flag + allowed posters for a channel.
+  - `DELETE /plugins/co.baxu.channel-guard/api/v1/admin/channels/{id}` —
+    remove a channel from Channel Guard.
+- `listChannelConfigs()` helper that walks the plugin KV store via
+  `KVList` and returns every `cg:channel:<id>` entry.
+
+### Changed
+- Webapp moved from a single vanilla JavaScript file to a React + TypeScript
+  source tree under `webapp/src/`, built with **esbuild** into
+  `webapp/dist/main.js`. The previous user-facing UX layer (input hide,
+  banner, `MessageWillBePostedHook`, WebSocket refresh) was ported with
+  no behavioural change.
+- `build.sh` now runs an `npm install` + `node esbuild.config.mjs` pass
+  in a `node:22-alpine` container before the Go cross-compile.
+- CI (`ci.yml`) and Release (`release.yml`) workflows install Node 22 and
+  build the webapp bundle before running Go steps / packaging the tarball.
+- `webapp/dist/` and `webapp/node_modules/` are now gitignored — the
+  bundle is reproduced from source on every build.
+
+### Note on previous releases
+- `1.2.0` (Marketplace-readiness — release_notes_url, audit logging,
+  SECURITY.md, screenshots) should have been versioned `1.1.1` under a
+  strict reading of SemVer; the changes were documentation and operational
+  polish rather than user-facing features. Going forward MINOR is reserved
+  for new user-facing features, PATCH for fixes / docs / build changes.
+
 ## [1.3.0] - 2026-06-20
 
 Adds a global always-allowed list and a fuller System Console panel so
@@ -133,7 +181,8 @@ Initial public release.
   macOS BSD tar injects — those headers cause Mattermost to reject
   uploads with "Unable to find manifest for extracted plugin".
 
-[Unreleased]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/phuoccm/mattermost-plugin-channel-guard/compare/v1.0.0...v1.1.0

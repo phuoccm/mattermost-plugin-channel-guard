@@ -6,11 +6,22 @@ set -euo pipefail
 
 PLUGIN_ID="co.baxu.channel-guard"
 PLUGIN_PKG="mattermost-plugin-channel-guard"
-VERSION="1.3.0"
+VERSION="1.4.0"
 GO_IMAGE="golang:1.26"
+NODE_IMAGE="node:22-alpine"
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
+
+echo "==> Building webapp bundle via Docker ($NODE_IMAGE)…"
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -e HOME=/tmp \
+  -v "$HERE":/src -w /src/webapp \
+  "$NODE_IMAGE" sh -c '
+    npm install --no-audit --no-fund --prefer-offline --loglevel=error
+    node esbuild.config.mjs
+  '
 
 echo "==> Building and packaging via Docker ($GO_IMAGE)…"
 docker run --rm \

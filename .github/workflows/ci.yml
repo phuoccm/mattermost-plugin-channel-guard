@@ -22,6 +22,19 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: webapp/package.json
+
+      - name: Install webapp deps and build bundle
+        working-directory: webapp
+        run: |
+          npm install --no-audit --no-fund --loglevel=error
+          node esbuild.config.mjs
+
       - name: gofmt
         run: |
           out=$(gofmt -d -s ./server)

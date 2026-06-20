@@ -49,3 +49,38 @@ func (p *Plugin) setChannelConfig(channelID string, cc *ChannelConfig) *model.Ap
 	}
 	return p.API.KVSet(channelConfigKeyPrefix+channelID, raw)
 }
+
+func (p *Plugin) deleteChannelConfig(channelID string) *model.AppError {
+	return p.API.KVDelete(channelConfigKeyPrefix + channelID)
+}
+
+// listChannelConfigs walks every key in the plugin KV store, returning the
+// channel IDs and parsed configs for each cg:channel:<id> entry.
+func (p *Plugin) listChannelConfigs() (map[string]*ChannelConfig, *model.AppError) {
+	out := make(map[string]*ChannelConfig)
+	const pageSize = 200
+	for page := 0; page < 1000; page++ {
+		keys, appErr := p.API.KVList(page, pageSize)
+		if appErr != nil {
+			return nil, appErr
+		}
+		for _, k := range keys {
+			if len(k) <= len(channelConfigKeyPrefix) || k[:len(channelConfigKeyPrefix)] != channelConfigKeyPrefix {
+				continue
+			}
+			channelID := k[len(channelConfigKeyPrefix):]
+			cc, err := p.getChannelConfig(channelID)
+			if err != nil {
+				continue
+			}
+			if cc == nil {
+				continue
+			}
+			out[channelID] = cc
+		}
+		if len(keys) < pageSize {
+			break
+		}
+	}
+	return out, nil
+}

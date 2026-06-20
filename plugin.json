@@ -5,7 +5,7 @@
   "homepage_url": "https://github.com/phuoccm/mattermost-plugin-channel-guard",
   "support_url": "https://github.com/phuoccm/mattermost-plugin-channel-guard/issues",
   "release_notes_url": "https://github.com/phuoccm/mattermost-plugin-channel-guard/blob/main/CHANGELOG.md",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "min_server_version": "9.5.0",
   "server": {
     "executables": {
@@ -23,6 +23,12 @@
     "header": "**Channel Guard** restricts who can start NEW messages (root posts) per channel. Replies within threads always stay open.\n\n**Two layers of configuration:**\n\n1. **Global settings (below)** — apply to every channel that has Channel Guard enabled.\n2. **Per-channel settings** — set inside the channel itself by Channel Admins or System Admins. Use `/channel-guard help` to see the available subcommands.\n\nExample per-channel setup:\n```\n/channel-guard enable\n/channel-guard add @alice @bob\n/channel-guard list\n```\n\n**Order of evaluation** when a user starts a new message in a restricted channel:\n\n1. Reply inside a thread → always allowed\n2. Bot or webhook (if **Always allow bots / webhooks** is on) → allowed\n3. System Admin → always allowed\n4. Username on the **global always-allowed** list → allowed in every channel\n5. Username on the channel's per-channel allow list → allowed\n6. Otherwise → blocked and shown the **Default rejection message**",
     "footer": "Per-channel allow lists are managed with the `/channel-guard` slash command from inside each channel.",
     "settings": [
+      {
+        "key": "ChannelsManager",
+        "display_name": "Per-channel allow lists",
+        "type": "custom",
+        "help_text": "List, edit, and remove the per-channel allow lists managed by this plugin. Equivalent to running /channel-guard list / add / remove inside each channel, surfaced here for centralised administration."
+      },
       {
         "key": "GlobalAlwaysAllowed",
         "display_name": "Global always-allowed usernames",

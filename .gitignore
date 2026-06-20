@@ -4,10 +4,10 @@
 # (cross-compiled server binaries)
 /server/dist/
 
-# Note: webapp/dist/main.js is hand-written source, not build output — do NOT ignore it.
-# If a bundler (esbuild/webpack/...) is added later, switch to:
-#   /webapp/dist/
-# and move the source to /webapp/src/.
+# webapp build output (rebuilt by ./build.sh via esbuild from /webapp/src/)
+/webapp/dist/
+/webapp/node_modules/
+/webapp/package-lock.json
 
 # Go
 *.test
