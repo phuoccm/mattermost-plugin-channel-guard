@@ -45,6 +45,19 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # Pin to TypeScript 5.x — TS 6 has breaking language changes and the
+      # build does not need cutting-edge type-checking. Re-evaluate manually
+      # if a compelling 6.x feature appears.
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
+      # Pin to @types/react 18.x — Mattermost host runs React 17/18, so 19's
+      # types would conflict with the React instance that actually executes
+      # the plugin's components at runtime.
+      - dependency-name: '@types/react'
+        update-types:
+          - version-update:semver-major
 
   # CI action versions (actions/checkout, actions/setup-go, etc.).
   - package-ecosystem: github-actions
