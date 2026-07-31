@@ -2,7 +2,7 @@ module github.com/baxu/mattermost-plugin-channel-guard
 
 go 1.26.3
 
-require github.com/mattermost/mattermost/server/public v0.4.2
+require github.com/mattermost/mattermost/server/public v0.4.3
 
 require (
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect
